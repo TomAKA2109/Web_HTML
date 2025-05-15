@@ -1,0 +1,138 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body {
+    background-image: url("ocean.jpg");
+    background-color: #fff;
+    color: #333;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background-color: #222;
+    color: #fff;
+    border-top: 4px solid gold;
+    border-bottom: 4px solid hotpink;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 20px;
+    color: gold;
+}
+
+.signin a {
+    color: yellow;
+    text-decoration: none;
+    font-weight: bold;
+    background: #333;
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
+/* Hero Section */
+.hero {
+    background-image: url('https://i.imgur.com/D5y4HmN.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 400px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 4px solid hotpink;
+}
+
+.overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 30px;
+    text-align: center;
+    color: white;
+    border-radius: 10px;
+}
+
+.overlay h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.overlay p {
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.overlay button {
+    background-color: yellow;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Highlights Section */
+.highlights {
+    padding: 30px;
+    text-align: center;
+    background-color: #e7ffff;
+}
+
+.highlights h2 {
+    margin-bottom: 20px;
+    color: #222;
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    width: 250px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+
+.card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.card p {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.card span {
+    color: dodgerblue;
+}
+
+/* Footer */
+footer {
+    background-color: #111;
+    padding: 20px;
+    text-align: center;
+}
+
+footer a {
+    color: white;
+    font-size: 24px;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #f39c12;
+}
