@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Bài Tập</title>
+  <link rel="stylesheet" href="BTTH2-b1.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+
+<!-- /.modal compose message -->
+    <div class="modal show" id="modalCompose">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header modal-header-info">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title"><span class="glyphicon glyphicon-envelope"></span> Get in touch with us by filling contact form below</h4>
+          </div>
+
+          <div class="modal-body">
+            <form role="form" class="form-horizontal">
+                <div class="form-group">
+                  <div class="col-sm-5"><input type="name" class="form-control" id="inputName" placeholder="*Enter your full name"></div>
+                  <div class="col-sm-7"><input type="email" class="form-control" id="inputEmail" placeholder="*Enter your email address"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-12"><input type="text" class="form-control" id="inputSubject" placeholder="Enter your subject"></div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-12"><textarea class="form-control" id="inputBody" rows="8" placeholder="*Your message here"></textarea></div>
+                </div>
+            </form>
+          </div>
+
+          <div class="modal-footer">
+            <div class = "p pull-right">
+              <p>* Please fill all required form fields, thanks!</p>
+            </div>
+            <button type="button" class="btn btn-primary pull-left">Send <i class="fa fa-arrow-circle-right fa-lg"></i></button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal compose message -->
+
+    <script>
+      document.querySelector('.btn.btn-primary').addEventListener('click', function () {
+      let isValid = true;
+
+      const fields = [
+        { id: 'inputName' },
+        { id: 'inputEmail' },
+        { id: 'inputBody' }
+      ];
+
+      fields.forEach(field => {
+        const input = document.getElementById(field.id);
+        const formGroup = input.closest('.form-group');
+
+        if (!input.value.trim()) {
+          formGroup.classList.add('has-error');
+          isValid = false;
+        } else {
+          formGroup.classList.remove('has-error');
+        }
+      });
+
+        if (isValid) {
+         alert("Form submitted successfully!");
+          // submit form here if needed
+        }
+        });
+    </script>
+
+
+</body>
+</html>
