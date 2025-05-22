@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Đăng Ký với jQuery và AJAX</title>
+    <link rel="stylesheet" href="BTTH3-b2.css">
+    <!-- jQuery CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="registration-container" id="registrationForm">
+            <h2>Đăng Ký Tài Khoản</h2>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="fullName">Họ và Tên:</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                    <span class="error-message" id="fullNameError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <span class="error-message" id="emailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mật Khẩu:</label>
+                    <input type="password" id="password" name="password" required>
+                    <span class="error-message" id="passwordError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Xác Nhận Mật Khẩu:</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <span class="error-message" id="confirmPasswordError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Số Điện Thoại:</label>
+                    <input type="tel" id="phone" name="phone">
+                    <span class="error-message" id="phoneError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="birthDate">Ngày Sinh:</label>
+                    <input type="date" id="birthDate" name="birthDate">
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                    <label for="agreeTerms">Tôi đồng ý với <a href="#" id="termsLink">điều khoản và điều kiện</a></label>
+                    <span class="error-message" id="termsError"></span>
+                </div>
+
+                <button type="submit" id="submitBtn">
+                    <span class="btn-text">Đăng Ký</span>
+                    <span class="loading-spinner" style="display: none;">⟳</span>
+                </button>
+            </form>
+
+            <div class="additional-info" id="additionalInfo" style="display: none;">
+                <h3>Thông Tin Bổ Sung</h3>
+                <p>Bạn có muốn nhận thông báo qua email không?</p>
+                <button id="showDetailsBtn">Xem Chi Tiết</button>
+            </div>
+        </div>
+
+        <!-- Success Message Container -->
+        <div class="success-container" id="successContainer" style="display: none;">
+            <div class="success-icon">✓</div>
+            <h2>Đăng Ký Thành Công!</h2>
+            <p>Chào mừng bạn đến với hệ thống của chúng tôi.</p>
+            <div class="user-info" id="userInfo"></div>
+            <button id="backToFormBtn">Đăng Ký Tài Khoản Khác</button>
+        </div>
+
+        <!-- Terms Modal -->
+        <div class="modal" id="termsModal" style="display: none;">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>Điều Khoản và Điều Kiện</h3>
+                <div class="terms-content">
+                    <p>1. Bạn phải cung cấp thông tin chính xác và đầy đủ.</p>
+                    <p>2. Mật khẩu phải được bảo mật an toàn.</p>
+                    <p>3. Không được sử dụng tài khoản cho mục đích bất hợp pháp.</p>
+                    <p>4. Chúng tôi có quyền đình chỉ tài khoản vi phạm quy định.</p>
+                </div>
+                <button id="acceptTerms">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            console.log("jQuery is ready!");
+            
+            // Validation functions
+            function validateFullName(name) {
+                return name.trim().length >= 2 && /^[a-zA-ZÀ-ỹ\s]+$/.test(name.trim());
+            }
+            
+            function validateEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+            
+            function validatePassword(password) {
+                return password.length >= 6;
+            }
+            
+            function validatePhone(phone) {
+                const phoneRegex = /^[0-9]{10,11}$/;
+                return phone === '' || phoneRegex.test(phone.replace(/\s/g, ''));
+            }
+            
+            // Clear error messages
+            function clearErrors() {
+                $('.error-message').text('').hide();
+                $('.form-group input').removeClass('error');
+            }
+            
+            // Show error message
+            function showError(fieldId, message) {
+                $('#' + fieldId + 'Error').text(message).show();
+                $('#' + fieldId).addClass('error');
+            }
+            
+            // Form validation
+            function validateForm() {
+                clearErrors();
+                let isValid = true;
+                
+                const fullName = $('#fullName').val();
+                const email = $('#email').val();
+                const password = $('#password').val();
+                const confirmPassword = $('#confirmPassword').val();
+                const phone = $('#phone').val();
+                const agreeTerms = $('#agreeTerms').is(':checked');
+                
+                // Validate full name
+                if (!validateFullName(fullName)) {
+                    showError('fullName', 'Họ tên phải có ít nhất 2 ký tự và chỉ chứa chữ cái');
+                    isValid = false;
+                }
+                
+                // Validate email
+                if (!validateEmail(email)) {
+                    showError('email', 'Email không hợp lệ');
+                    isValid = false;
+                }
+                
+                // Validate password
+                if (!validatePassword(password)) {
+                    showError('password', 'Mật khẩu phải có ít nhất 6 ký tự');
+                    isValid = false;
+                }
+                
+                // Validate confirm password
+                if (password !== confirmPassword) {
+                    showError('confirmPassword', 'Mật khẩu xác nhận không khớp');
+                    isValid = false;
+                }
+                
+                // Validate phone
+                if (!validatePhone(phone)) {
+                    showError('phone', 'Số điện thoại không hợp lệ (10-11 số)');
+                    isValid = false;
+                }
+                
+                // Validate terms agreement
+                if (!agreeTerms) {
+                    showError('terms', 'Bạn phải đồng ý với điều khoản và điều kiện');
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+            
+            // Handle form submission
+            $('#signupForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                if (!validateForm()) {
+                    return;
+                }
+                
+                // Show loading state
+                $('#submitBtn').addClass('loading');
+                $('.btn-text').hide();
+                $('.loading-spinner').show();
+                
+                // Prepare form data
+                const formData = {
+                    fullName: $('#fullName').val(),
+                    email: $('#email').val(),
+                    password: $('#password').val(),
+                    phone: $('#phone').val(),
+                    birthDate: $('#birthDate').val()
+                };
+                
+                // AJAX request to mock API
+                $.ajax({
+                    url: 'https://jsonplaceholder.typicode.com/users',
+                    method: 'POST',
+                    data: JSON.stringify(formData),
+                    contentType: 'application/json',
+                    timeout: 5000,
+                    success: function(response) {
+                        console.log('Registration successful:', response);
+                        
+                        // Show success message
+                        $('#userInfo').html(`
+                            <p><strong>Tên:</strong> ${formData.fullName}</p>
+                            <p><strong>Email:</strong> ${formData.email}</p>
+                            <p><strong>ID:</strong> ${response.id || Math.floor(Math.random() * 1000)}</p>
+                        `);
+                        
+                        // Hide form and show success message with animation
+                        $('#registrationForm').slideUp(800, function() {
+                            $('#successContainer').fadeIn(800);
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Registration failed:', error);
+                        alert('Server bận, vui lòng thử lại sau. Lỗi: ' + error);
+                    },
+                    complete: function() {
+                        // Hide loading state
+                        $('#submitBtn').removeClass('loading');
+                        $('.btn-text').show();
+                        $('.loading-spinner').hide();
+                    }
+                });
+            });
+            
+            // Back to form button
+            $('#backToFormBtn').on('click', function() {
+                $('#successContainer').fadeOut(400, function() {
+                    $('#signupForm')[0].reset();
+                    clearErrors();
+                    $('#registrationForm').slideDown(400);
+                });
+            });
+            
+            // Show additional info button
+            $('#showDetailsBtn').on('click', function() {
+                $('#additionalInfo').slideToggle(300);
+            });
+            
+            // Terms modal functionality
+            $('#termsLink').on('click', function(e) {
+                e.preventDefault();
+                $('#termsModal').fadeIn(300);
+            });
+            
+            $('.close, #acceptTerms').on('click', function() {
+                $('#termsModal').fadeOut(300);
+                if ($(this).attr('id') === 'acceptTerms') {
+                    $('#agreeTerms').prop('checked', true);
+                }
+            });
+            
+            // Close modal when clicking outside
+            $(window).on('click', function(e) {
+                if ($(e.target).is('#termsModal')) {
+                    $('#termsModal').fadeOut(300);
+                }
+            });
+            
+            // Real-time validation
+            $('#fullName').on('blur', function() {
+                const value = $(this).val();
+                if (value && !validateFullName(value)) {
+                    showError('fullName', 'Họ tên phải có ít nhất 2 ký tự và chỉ chứa chữ cái');
+                } else {
+                    $('#fullNameError').hide();
+                    $(this).removeClass('error');
+                }
+            });
+            
+            $('#email').on('blur', function() {
+                const value = $(this).val();
+                if (value && !validateEmail(value)) {
+                    showError('email', 'Email không hợp lệ');
+                } else {
+                    $('#emailError').hide();
+                    $(this).removeClass('error');
+                }
+            });
+            
+            $('#password').on('input', function() {
+                const value = $(this).val();
+                if (value && !validatePassword(value)) {
+                    showError('password', 'Mật khẩu phải có ít nhất 6 ký tự');
+                } else {
+                    $('#passwordError').hide();
+                    $(this).removeClass('error');
+                }
+            });
+            
+            $('#confirmPassword').on('input', function() {
+                const password = $('#password').val();
+                const confirmPassword = $(this).val();
+                if (confirmPassword && password !== confirmPassword) {
+                    showError('confirmPassword', 'Mật khẩu xác nhận không khớp');
+                } else {
+                    $('#confirmPasswordError').hide();
+                    $(this).removeClass('error');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

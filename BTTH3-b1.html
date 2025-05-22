@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Công Việc - Todo List</title>
+    <link rel="stylesheet" href="BTTH3-b1.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Todo List</h1>
+            <p>Quản lý công việc hàng ngày của bạn</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" id="taskInput" placeholder="Nhập công việc mới..." maxlength="100">
+                <button id="addBtn">➕ Thêm</button>
+            </div>
+            
+            <div class="filter-section">
+                <button class="filter-btn active" data-filter="all">Tất cả</button>
+                <button class="filter-btn" data-filter="pending">Chưa hoàn thành</button>
+                <button class="filter-btn" data-filter="completed">Đã hoàn thành</button>
+            </div>
+        </div>
+
+        <div class="tasks-section">
+            <div class="task-stats">
+                <span>Tổng: <strong id="totalTasks">0</strong></span>
+                <span>Chưa hoàn thành: <strong id="pendingTasks">0</strong></span>
+                <span>Đã hoàn thành: <strong id="completedTasks">0</strong></span>
+            </div>
+
+            <ul class="task-list" id="taskList">
+                <!--Danh sách công việc-->
+            </ul>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div style="font-size: 4rem; margin-bottom: 20px;">📝</div>
+                <h3>Chưa có công việc nào</h3>
+                <p>Hãy thêm công việc đầu tiên của bạn!</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="BTTH3-b1.js"></script>
+</body>
+</html>
